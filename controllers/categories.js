@@ -1,11 +1,11 @@
 const { fetchAllCategories } = require("../models/categories");
 
-exports.apiIndex = (req, res) => {
-  res.status(200).send({ msg: "OK" });
+exports.mainRoute = (req, res) => {
+  res.status(200).send({ msg: "Welcome to the main route" });
 };
 
 exports.getAllCategories = (req, res, next) => {
   fetchAllCategories()
-    .then((slugs) => res.status(200).send({ slugs }))
+    .then((categories) => res.status(200).send({ categories }))
     .catch((err) => next(err));
 };
