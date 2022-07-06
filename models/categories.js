@@ -6,16 +6,14 @@ exports.fetchAllCategories = () => {
     .then((categories) => categories.rows);
 };
 exports.fetchReviewById = (reviewId) => {
-  const queryStr = `SELECT review_id,title,review_body,designer,review_img_url,votes,owner,created_at FROM reviews JOIN categories ON reviews.category = categories.slug WHERE review_id = $1;`;
-  return Promise.all([
-    db.query(queryStr, [reviewId]),
-    db.query(
-      `SELECT slug, description FROM categories JOIN reviews ON categories.slug = reviews.category;`
-    ),
-  ]).then((resultArr) => {
-    if (resultArr[0].rowCount === 0) return [];
+  if (!parseInt(reviewId))
+    return Promise.reject({ msg: "Invalid Input", statusCode: 400 });
 
-    resultArr[0].rows[0].category = resultArr[1].rows[0];
-    return resultArr[0].rows[0];
+  const queryStr = `SELECT review_id,title,review_body,designer,review_img_url,votes,owner,category,created_at FROM reviews WHERE review_id = $1;`;
+
+  return db.query(queryStr, [reviewId]).then(({ rows, rowCount }) => {
+    if (rowCount === 0) return [];
+
+    return rows[0];
   });
 };

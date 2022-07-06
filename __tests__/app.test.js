@@ -41,15 +41,11 @@ describe("app", () => {
   });
   describe("/api/reviews/:review_id", () => {
     describe("GET", () => {
-      it("200: given a review_id, responds with the corresponding review object", () => {
+      it("given a review_id, responds with the corresponding review object", () => {
         return request(app)
           .get("/api/reviews/1")
           .expect(200)
           .then(({ body: { review } }) => {
-            const mockCategory = {
-              slug: expect.toBeString(),
-              description: expect.toBeString(),
-            };
             expect(review).toHaveProperty("review_id", 1);
             expect(review).toHaveProperty("title", "Agricola");
             expect(review).toHaveProperty("review_body", "Farmyard fun!");
@@ -59,7 +55,7 @@ describe("app", () => {
               "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
             );
             expect(review).toHaveProperty("votes", 1);
-            expect(review.category).toMatchObject(mockCategory);
+            expect(review).toHaveProperty("category", "euro game");
 
             expect(review).toHaveProperty("owner", "mallionaire");
             expect(review).toHaveProperty("created_at");
@@ -67,7 +63,7 @@ describe("app", () => {
       });
       it("responds with 400 for invalid inputs", () => {
         return request(app)
-          .get("/api/reviews/NaN")
+          .get("/api/reviews/not_a_number")
           .expect(400)
           .then(({ body }) => expect(body).toEqual({ msg: "Invalid Input" }));
       });

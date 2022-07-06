@@ -13,12 +13,10 @@ exports.getAllCategories = (req, res, next) => {
 exports.getReviewById = (req, res, next) => {
   const reviewId = req.params.review_id;
 
-  if (!parseInt(reviewId))
-    return res.status(400).send({ msg: "Invalid Input" });
-
   fetchReviewById(reviewId)
     .then((review) => {
-      if (review.length === 0) res.status(404).send({ msg: "Not Found" });
+      if (review.length === 0)
+        return Promise.reject({ msg: "Not Found", statusCode: 404 });
 
       res.status(200).send({ review });
     })

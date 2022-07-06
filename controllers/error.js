@@ -1,4 +1,4 @@
 exports.errorMiddleware = (err, req, res, next) => {
-  console.error(err);
-  res.status(500).send({ msg: "Internal Server Error" });
+  const { msg } = err;
+  res.status(err.statusCode).send({ msg });
 };
