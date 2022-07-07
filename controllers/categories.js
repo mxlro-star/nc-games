@@ -32,6 +32,6 @@ exports.patchVotes = (req, res, next) => {
   const incVotes = req.body.inc_votes;
 
   updateVotes(reviewId, incVotes)
-    .then((review) => res.status(200).send(review))
+    .then((review) => res.status(200).send({ review }))
     .catch((err) => next(err));
 };

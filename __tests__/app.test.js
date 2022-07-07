@@ -80,8 +80,9 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: 1 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).toBe(2);
+          .then(({ body: { review } }) => {
+            console.log(review);
+            expect(review.votes).toBe(2);
           });
       });
       it("should decrement votes", () => {
@@ -89,8 +90,8 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: -1 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).toBe(0);
+          .then(({ body: { review } }) => {
+            expect(review.votes).toBe(0);
           });
       });
       it("should not allow votes to go below 0", () => {
@@ -98,28 +99,28 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: -5 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).toBe(0);
+          .then(({ body: { review } }) => {
+            expect(review.votes).toBe(0);
           });
       });
       it("should respond with the corresponding review object", () => {
         return request(app)
           .patch("/api/reviews/1")
           .send({ inc_votes: 5 })
-          .then(({ body }) => {
-            expect(body).toHaveProperty("review_id", 1);
-            expect(body).toHaveProperty("title", "Agricola");
-            expect(body).toHaveProperty("review_body", "Farmyard fun!");
-            expect(body).toHaveProperty("designer", "Uwe Rosenberg");
-            expect(body).toHaveProperty(
+          .then(({ body: { review } }) => {
+            expect(review).toHaveProperty("review_id", 1);
+            expect(review).toHaveProperty("title", "Agricola");
+            expect(review).toHaveProperty("review_body", "Farmyard fun!");
+            expect(review).toHaveProperty("designer", "Uwe Rosenberg");
+            expect(review).toHaveProperty(
               "review_img_url",
               "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
             );
-            expect(body).toHaveProperty("votes", 6);
-            expect(body).toHaveProperty("category", "euro game");
+            expect(review).toHaveProperty("votes", 6);
+            expect(review).toHaveProperty("category", "euro game");
 
-            expect(body).toHaveProperty("owner", "mallionaire");
-            expect(body).toHaveProperty("created_at");
+            expect(review).toHaveProperty("owner", "mallionaire");
+            expect(review).toHaveProperty("created_at");
           });
       });
       it("should respond with 400 for invalid inputs", () => {
