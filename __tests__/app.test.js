@@ -61,6 +61,14 @@ describe("app", () => {
             expect(review).toHaveProperty("created_at");
           });
       });
+      it("should include comment_count in review object", () => {
+        return request(app)
+          .get("/api/reviews/2")
+          .expect(200)
+          .then(({ body: { review } }) => {
+            expect(review).toHaveProperty("comment_count", 3);
+          });
+      });
       it("responds with 400 for invalid inputs", () => {
         return request(app)
           .get("/api/reviews/not_a_number")

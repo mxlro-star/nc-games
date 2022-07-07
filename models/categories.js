@@ -11,10 +11,17 @@ exports.fetchReviewById = (reviewId) => {
 
   const queryStr = `SELECT review_id,title,review_body,designer,review_img_url,votes,owner,category,created_at FROM reviews WHERE review_id = $1;`;
 
-  return db.query(queryStr, [reviewId]).then(({ rows, rowCount }) => {
-    if (rowCount === 0) return [];
+  const countQueryStr = `SELECT COUNT(*) FROM comments WHERE review_id = $1`;
 
-    return rows[0];
+  const reviewPromise = db.query(queryStr, [reviewId]);
+
+  const countPromise = db.query(countQueryStr, [reviewId]);
+
+  return Promise.all([reviewPromise, countPromise]).then((arr) => {
+    if (arr[0].rowCount === 0) return [];
+
+    arr[0].rows[0].comment_count = parseInt(arr[1].rows[0].count);
+    return arr[0].rows[0];
   });
 };
 
