@@ -22,13 +22,16 @@ exports.updateVotes = (reviewId, incVotes) => {
   if (!parseInt(incVotes))
     return Promise.reject({ msg: "Invalid Input", statusCode: 400 });
 
+
   const queryStr = `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`;
 
   return db.query(queryStr, [incVotes, reviewId]).then(({ rows }) => {
+
     if (rows[0].votes < 0) rows[0].votes = 0;
     return rows[0];
   });
 };
+
 
 exports.fetchUsers = () => {
   const queryStr = `SELECT * FROM users;`;
@@ -37,3 +40,4 @@ exports.fetchUsers = () => {
     return rows;
   });
 };
+
