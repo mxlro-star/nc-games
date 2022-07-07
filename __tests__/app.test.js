@@ -13,10 +13,10 @@ beforeEach(() => {
 
 describe("app", () => {
   describe("/", () => {
-    it("200: responds with a welcome message", () => {
+    it("should respond with a welcome message", () => {
       return request(app).get("/").expect(200);
     });
-    it("404: error handles bad path", () => {
+    it("should respond with 404 when passed an invalid path", () => {
       return request(app)
         .get("/api/bad_path")
         .expect(404)
@@ -25,7 +25,7 @@ describe("app", () => {
   });
   describe("/api/categories", () => {
     describe("GET", () => {
-      it("200: responds with an array of category objects", () => {
+      it("should respond with an array of category objects", () => {
         return request(app)
           .get("/api/categories")
           .expect(200)
@@ -41,7 +41,7 @@ describe("app", () => {
   });
   describe("/api/reviews/:review_id", () => {
     describe("GET", () => {
-      it("given a review_id, responds with the corresponding review object", () => {
+      it("should respond with the corresponding review object", () => {
         return request(app)
           .get("/api/reviews/1")
           .expect(200)
@@ -72,6 +72,61 @@ describe("app", () => {
           .get("/api/reviews/404")
           .expect(404)
           .then(({ body }) => expect(body).toEqual({ msg: "Not Found" }));
+      });
+    });
+    describe("PATCH", () => {
+      it("should increment votes", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).toBe(2);
+          });
+      });
+      it("should decrement votes", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: -1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).toBe(0);
+          });
+      });
+      it("should not allow votes to go below 0", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: -5 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).toBe(0);
+          });
+      });
+      it("should respond with the corresponding review object", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: 5 })
+          .then(({ body }) => {
+            expect(body).toHaveProperty("review_id", 1);
+            expect(body).toHaveProperty("title", "Agricola");
+            expect(body).toHaveProperty("review_body", "Farmyard fun!");
+            expect(body).toHaveProperty("designer", "Uwe Rosenberg");
+            expect(body).toHaveProperty(
+              "review_img_url",
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+            );
+            expect(body).toHaveProperty("votes", 6);
+            expect(body).toHaveProperty("category", "euro game");
+
+            expect(body).toHaveProperty("owner", "mallionaire");
+            expect(body).toHaveProperty("created_at");
+          });
+      });
+      it("should respond with 400 for invalid inputs", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: "a" })
+          .expect(400);
       });
     });
   });
