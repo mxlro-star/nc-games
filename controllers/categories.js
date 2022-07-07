@@ -4,7 +4,6 @@ const {
   updateVotes,
 
   fetchUsers,
-
 } = require("../models/categories");
 
 exports.mainRoute = (req, res) => {
@@ -35,8 +34,11 @@ exports.patchVotes = (req, res, next) => {
   const incVotes = req.body.inc_votes;
 
   updateVotes(reviewId, incVotes)
-
-    .then((review) => res.status(200).send({ review }))
+    .then((review) => {
+      if (review.length === 0)
+        return Promise.reject({ msg: "Not Found", statusCode: 404 });
+      res.status(200).send({ review });
+    })
     .catch((err) => next(err));
 };
 

@@ -82,9 +82,7 @@ describe("app", () => {
           .expect(200)
 
           .then(({ body: { review } }) => {
-            console.log(review);
             expect(review.votes).toBe(2);
-
           });
       });
       it("should decrement votes", () => {
@@ -95,7 +93,6 @@ describe("app", () => {
 
           .then(({ body: { review } }) => {
             expect(review.votes).toBe(0);
-
           });
       });
       it("should not allow votes to go below 0", () => {
@@ -106,7 +103,6 @@ describe("app", () => {
 
           .then(({ body: { review } }) => {
             expect(review.votes).toBe(0);
-
           });
       });
       it("should respond with the corresponding review object", () => {
@@ -128,7 +124,6 @@ describe("app", () => {
 
             expect(review).toHaveProperty("owner", "mallionaire");
             expect(review).toHaveProperty("created_at");
-
           });
       });
       it("should respond with 400 for invalid inputs", () => {
@@ -137,8 +132,19 @@ describe("app", () => {
           .send({ inc_votes: "a" })
           .expect(400);
       });
+      it("should respond with 400 when inc_votes is not defined", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ notdefined: -1 })
+          .expect(400);
+      });
+      it("should respond with 404 for undefined resource", () => {
+        return request(app)
+          .patch("/api/reviews/200")
+          .send({ inc_votes: 1 })
+          .expect(404);
+      });
     });
-
   });
   describe("/api/users", () => {
     describe("GET", () => {
@@ -156,6 +162,5 @@ describe("app", () => {
           });
       });
     });
-
   });
 });
