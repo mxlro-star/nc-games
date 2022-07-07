@@ -80,8 +80,8 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: 1 })
           .expect(200)
+
           .then(({ body: { review } }) => {
-            console.log(review);
             expect(review.votes).toBe(2);
           });
       });
@@ -90,6 +90,7 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: -1 })
           .expect(200)
+
           .then(({ body: { review } }) => {
             expect(review.votes).toBe(0);
           });
@@ -99,6 +100,7 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: -5 })
           .expect(200)
+
           .then(({ body: { review } }) => {
             expect(review.votes).toBe(0);
           });
@@ -107,6 +109,7 @@ describe("app", () => {
         return request(app)
           .patch("/api/reviews/1")
           .send({ inc_votes: 5 })
+
           .then(({ body: { review } }) => {
             expect(review).toHaveProperty("review_id", 1);
             expect(review).toHaveProperty("title", "Agricola");
@@ -128,6 +131,35 @@ describe("app", () => {
           .patch("/api/reviews/1")
           .send({ inc_votes: "a" })
           .expect(400);
+      });
+      it("should respond with 400 when inc_votes is not defined", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ notdefined: -1 })
+          .expect(400);
+      });
+      it("should respond with 404 for undefined resource", () => {
+        return request(app)
+          .patch("/api/reviews/200")
+          .send({ inc_votes: 1 })
+          .expect(404);
+      });
+    });
+  });
+  describe("/api/users", () => {
+    describe("GET", () => {
+      it("should respond with all users", () => {
+        return request(app)
+          .get("/api/users")
+          .expect(200)
+          .then(({ body: { users } }) => {
+            expect(users).toHaveLength(4);
+            users.forEach((user) => {
+              expect(user).toHaveProperty("username");
+              expect(user).toHaveProperty("name");
+              expect(user).toHaveProperty("avatar_url");
+            });
+          });
       });
     });
   });
