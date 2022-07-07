@@ -130,4 +130,21 @@ describe("app", () => {
       });
     });
   });
+  describe("/api/users", () => {
+    describe("GET", () => {
+      it("should respond with all users", () => {
+        return request(app)
+          .get("/api/users")
+          .expect(200)
+          .then(({ body: { users } }) => {
+            expect(users).toHaveLength(4);
+            users.forEach((user) => {
+              expect(user).toHaveProperty("username");
+              expect(user).toHaveProperty("name");
+              expect(user).toHaveProperty("avatar_url");
+            });
+          });
+      });
+    });
+  });
 });

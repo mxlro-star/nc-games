@@ -2,6 +2,7 @@ const {
   fetchAllCategories,
   fetchReviewById,
   updateVotes,
+  fetchUsers,
 } = require("../models/categories");
 
 exports.mainRoute = (req, res) => {
@@ -33,5 +34,11 @@ exports.patchVotes = (req, res, next) => {
 
   updateVotes(reviewId, incVotes)
     .then((review) => res.status(200).send(review))
+    .catch((err) => next(err));
+};
+
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => res.status(200).send({ users }))
     .catch((err) => next(err));
 };
