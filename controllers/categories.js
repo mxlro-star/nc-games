@@ -1,4 +1,8 @@
-const { fetchAllCategories, fetchReviewById } = require("../models/categories");
+const {
+  fetchAllCategories,
+  fetchReviewById,
+  updateVotes,
+} = require("../models/categories");
 
 exports.mainRoute = (req, res) => {
   res.status(200).send({ msg: "Welcome to the main route" });
@@ -20,5 +24,14 @@ exports.getReviewById = (req, res, next) => {
 
       res.status(200).send({ review });
     })
+    .catch((err) => next(err));
+};
+
+exports.patchVotes = (req, res, next) => {
+  const reviewId = req.params.review_id;
+  const incVotes = req.body.inc_votes;
+
+  updateVotes(reviewId, incVotes)
+    .then((review) => res.status(200).send(review))
     .catch((err) => next(err));
 };

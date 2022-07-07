@@ -17,3 +17,15 @@ exports.fetchReviewById = (reviewId) => {
     return rows[0];
   });
 };
+
+exports.updateVotes = (reviewId, incVotes) => {
+  if (!parseInt(incVotes))
+    return Promise.reject({ msg: "Invalid Input", statusCode: 400 });
+
+  const patchVotesQuery = `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`;
+
+  return db.query(patchVotesQuery, [incVotes, reviewId]).then(({ rows }) => {
+    if (rows[0].votes < 0) rows[0].votes = 0;
+    return rows[0];
+  });
+};
