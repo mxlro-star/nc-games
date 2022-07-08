@@ -21,9 +21,6 @@ exports.getReviewById = (req, res, next) => {
 
   fetchReviewById(reviewId)
     .then((review) => {
-      if (review.length === 0)
-        return Promise.reject({ msg: "Not Found", statusCode: 404 });
-
       res.status(200).send({ review });
     })
     .catch((err) => next(err));
@@ -35,8 +32,6 @@ exports.patchVotes = (req, res, next) => {
 
   updateVotes(reviewId, incVotes)
     .then((review) => {
-      if (review.length === 0)
-        return Promise.reject({ msg: "Not Found", statusCode: 404 });
       res.status(200).send({ review });
     })
     .catch((err) => next(err));
