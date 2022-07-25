@@ -194,3 +194,24 @@ describe("/api/reviews", () => {
     });
   });
 });
+
+describe("/api/reviews/:review_id/comments", () => {
+  describe("GET", () => {
+    it("should respond with all comments for given review id", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(3);
+          comments.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("review_id");
+          });
+        });
+    });
+  });
+});

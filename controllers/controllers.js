@@ -4,6 +4,7 @@ const {
   updateVotes,
   fetchAllReviews,
   fetchUsers,
+  fetchCommentsByReview,
 } = require("../models/models");
 
 exports.mainRoute = (req, res) => {
@@ -46,5 +47,15 @@ exports.getUsers = (req, res, next) => {
 exports.getAllReviews = (req, res, next) => {
   fetchAllReviews()
     .then((reviews) => res.status(200).send({ reviews }))
+    .catch((err) => next(err));
+};
+
+exports.getCommentsByReview = (req, res, next) => {
+  const reviewId = req.params.review_id;
+
+  fetchCommentsByReview(reviewId)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
     .catch((err) => next(err));
 };
