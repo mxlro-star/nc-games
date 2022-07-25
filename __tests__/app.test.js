@@ -171,3 +171,26 @@ describe("app", () => {
     });
   });
 });
+
+describe("/api/reviews", () => {
+  describe("GET", () => {
+    it("should respond with all reviews", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toHaveLength(13);
+          reviews.forEach((review) => {
+            expect(review).toHaveProperty("title");
+            expect(review).toHaveProperty("designer");
+            expect(review).toHaveProperty("owner");
+            expect(review).toHaveProperty("review_img_url");
+            expect(review).toHaveProperty("review_body");
+            expect(review).toHaveProperty("category");
+            expect(review).toHaveProperty("created_at");
+            expect(review).toHaveProperty("votes");
+          });
+        });
+    });
+  });
+});

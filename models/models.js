@@ -51,3 +51,10 @@ exports.fetchUsers = () => {
     return rows;
   });
 };
+
+exports.fetchAllReviews = () => {
+  const queryStr = `SELECT * FROM REVIEWS`;
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
+};
