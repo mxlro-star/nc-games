@@ -10,6 +10,7 @@ const {
   patchVotes,
   getUsers,
   getAllReviews,
+  getCommentsByReview,
 } = require("./controllers/controllers");
 const { errorMiddleware } = require("./controllers/error");
 
@@ -24,6 +25,7 @@ app.get("/api/reviews", getAllReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.patch("/api/reviews/:review_id", patchVotes);
 
+app.get("/api/reviews/:review_id/comments", getCommentsByReview);
 app.get("/api/users", getUsers);
 
 app.get("*", (req, res) => {

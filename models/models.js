@@ -53,8 +53,17 @@ exports.fetchUsers = () => {
 };
 
 exports.fetchAllReviews = () => {
-  const queryStr = `SELECT * FROM REVIEWS`;
+  const queryStr = `SELECT * FROM reviews`;
   return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.fetchCommentsByReview = (reviewId) => {
+  const queryStr = `SELECT comment_id,votes,created_at,author,body,review_id,comment_id FROM comments WHERE comments.review_id = $1;`;
+
+  return db.query(queryStr, [reviewId]).then(({ rows }) => {
+    console.log(rows);
     return rows;
   });
 };
