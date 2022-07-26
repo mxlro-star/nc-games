@@ -11,6 +11,7 @@ const {
   getUsers,
   getAllReviews,
   getCommentsByReview,
+  postComment,
 } = require("./controllers/controllers");
 const { errorMiddleware } = require("./controllers/error");
 
@@ -25,8 +26,9 @@ app.get("/api/reviews", getAllReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.patch("/api/reviews/:review_id", patchVotes);
 
-app.get("/api/reviews/:review_id/comments", getCommentsByReview);
 app.get("/api/users", getUsers);
+app.get("/api/reviews/:review_id/comments", getCommentsByReview);
+app.post("/api/reviews/:review_id/comments", postComment);
 
 app.get("*", (req, res) => {
   res.status(404).send({ msg: "Invalid Path" });

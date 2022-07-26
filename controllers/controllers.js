@@ -5,6 +5,7 @@ const {
   fetchAllReviews,
   fetchUsers,
   fetchCommentsByReview,
+  addComment,
 } = require("../models/models");
 
 exports.mainRoute = (req, res) => {
@@ -56,6 +57,17 @@ exports.getCommentsByReview = (req, res, next) => {
   fetchCommentsByReview(reviewId)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch((err) => next(err));
+};
+
+exports.postComment = (req, res, next) => {
+  const reviewId = req.params.review_id;
+  const { username, body } = req.body;
+
+  addComment(reviewId, username, body)
+    .then((comments) => {
+      res.status(201).send({ comments });
     })
     .catch((err) => next(err));
 };

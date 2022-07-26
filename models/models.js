@@ -1,3 +1,4 @@
+const { use } = require("../app");
 const db = require("../db/connection");
 
 exports.fetchAllCategories = () => {
@@ -60,10 +61,17 @@ exports.fetchAllReviews = () => {
 };
 
 exports.fetchCommentsByReview = (reviewId) => {
-  const queryStr = `SELECT comment_id,votes,created_at,author,body,review_id,comment_id FROM comments WHERE comments.review_id = $1;`;
+  const queryStr = `SELECT comment_id,votes,created_at,author,body,review_id FROM comments WHERE comments.review_id = $1;`;
 
   return db.query(queryStr, [reviewId]).then(({ rows }) => {
-    console.log(rows);
+    return rows;
+  });
+};
+
+exports.addComment = (reviewId, username, body) => {
+  const queryStr = `INSERT INTO comments (review_id, author, body, votes) VALUES ($1,$2,$3, 0);`;
+
+  return db.query(queryStr, [reviewId, username, body]).then(({ rows }) => {
     return rows;
   });
 };

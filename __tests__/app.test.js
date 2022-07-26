@@ -214,4 +214,22 @@ describe("/api/reviews/:review_id/comments", () => {
         });
     });
   });
+  describe("POST", () => {
+    it("will add a comment to a review", () => {
+      return request(app)
+        .post("/api/reviews/2/comments")
+        .send({ username: "philippaclaire9", body: "Excellent game!" })
+        .expect(201)
+        .then(({ body: { comments } }) => {
+          comments.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("review_id");
+          });
+        });
+    });
+  });
 });
